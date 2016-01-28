@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Simoncouche.Prototypes {
 	
@@ -7,6 +6,8 @@ namespace Simoncouche.Prototypes {
 
 		[SerializeField]
 		private float _moveSpeed = 5.0f;
+
+		// METHODS
 
 		public void Update () {
 			transform.Translate(new Vector3(_moveSpeed * Time.deltaTime, 0, 0));

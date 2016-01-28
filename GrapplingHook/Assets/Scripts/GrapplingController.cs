@@ -1,37 +1,49 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
 
 namespace Simoncouche.Prototypes {
 
-	[RequireComponent(typeof(Rigidbody2D))]
+	[RequireComponent(typeof(SpringJoint2D))]
 	public class GrapplingController : MonoBehaviour {
 
 		[Tooltip("Reference to the grappling hook prefab")]
 		[SerializeField]
 		private GrapplingHook _grapplingHookPrefab;
 
-		private Rigidbody2D _rigidbody;
+		private float _spawnRopeDistanceThreshold = 1f;
+
 		private GrapplingHook _grapplingHookObj;
 
+		// COMPONENTS
+
+		private SpringJoint2D _joint;
+		public SpringJoint2D joint { get { return _joint; } }
+
+		// METHODS
+
 		public void Awake() {
-			_rigidbody = GetComponent<Rigidbody2D>();
+			_joint = GetComponent<SpringJoint2D>();
 		}
 
-		public void Update () {
+		public void Update() {
 			if (Input.GetButtonDown("Fire") && !isGrapplingHookActive) {
 				Fire();
+			}
+
+			Debug.Log(Vector3.Distance(transform.position, _joint.connectedBody.position));
+			if (isGrapplingHookActive && Vector3.Distance(transform.position, _joint.connectedBody.position) > _spawnRopeDistanceThreshold) {
+				_joint.connectedBody.GetComponent<GrapplingRopeSection>().SpawnRope();
 			}
 		}
 
 		private void Fire() {
-			_grapplingHookObj = (GrapplingHook)GameObject.Instantiate(_grapplingHookPrefab, transform.position, transform.rotation);
+			_grapplingHookObj = (GrapplingHook)Instantiate(_grapplingHookPrefab, transform.position, transform.rotation);
+			_grapplingHookObj.controller = this;
 			_grapplingHookObj.onHit.AddListener(RecallGrapplingHook);
-			_grapplingHookObj.springJoint.connectedBody = _rigidbody;
+			_joint.enabled = true;
 		}
 
 		public void RecallGrapplingHook() {
-			GameObject.Destroy(_grapplingHookObj.gameObject);
+			Destroy(_grapplingHookObj.gameObject);
 			_grapplingHookObj = null;
 		}
 

@@ -1,19 +1,7 @@
 ﻿using UnityEngine;
 
-public class Grappleable : MonoBehaviour {
+namespace Simoncouche.Prototypes {
 
-	private Rigidbody2D _rigidbody;
-	private FixedJoint2D _joint;
-
-	public void Awake() {
-		_rigidbody = GetComponent<Rigidbody2D>();
-		_joint = GetComponent<FixedJoint2D>();
-	}
-
-	public void OnCollisionEnter2D(Collision2D collision) {
-		if (collision.gameObject.tag == "GrapplingHook") {
-			_joint.connectedBody = collision.rigidbody;
-			collision.rigidbody.mass = _rigidbody.mass;
-		}
+	public class Grappleable : MonoBehaviour {
 	}
 }
