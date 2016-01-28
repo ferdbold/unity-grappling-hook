@@ -5,7 +5,7 @@ namespace Simoncouche.Prototypes {
 
 	[RequireComponent(typeof(SpringJoint2D))]
 	public class GrapplingHook : MonoBehaviour {
-
+		
 		private Rigidbody2D _rigidbody;
 
 		[SerializeField]
@@ -16,13 +16,17 @@ namespace Simoncouche.Prototypes {
 
 		public void Awake() {
 			_rigidbody = GetComponent<Rigidbody2D>();
-			_rigidbody.AddForce(new Vector2(_forceAmount, 0), ForceMode2D.Impulse);
+			_rigidbody.AddForce(transform.rotation * new Vector2(_forceAmount, 0), ForceMode2D.Impulse);
 		}
 
 		public void Update() {
 			if (Input.GetButtonDown("Fire")) {
 				onHit.Invoke();
 			}
+		}
+
+		public void OnCollisionEnter2D(Collision2D collision) {
+			
 		}
 
 		public UnityEvent onHit { get { return _onHit; } }
